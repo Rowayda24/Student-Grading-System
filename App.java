@@ -16,9 +16,9 @@ public class App {
             System.out.println("2. Add a new student");
             System.out.println("3. Show all students");
             System.out.println("4. Show all courses");
-            System.out.println("5. Exit");
-            System.out.println("6. Assign grade to student");
-            System.out.println("7. View grades for a student");
+            System.out.println("5. Assign grade to student");
+            System.out.println("6. View grades for a student");
+            System.out.println("7. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -65,11 +65,8 @@ public class App {
                     }
                     break;
 
-                case 5:
-                    System.out.println("Exiting...");
-                    return;
 
-                case 6:
+                case 5:
                     if (students.isEmpty() || courses.isEmpty()) {
                         System.out.println("Add students and courses before assigning grades.");
                         break;
@@ -116,7 +113,7 @@ public class App {
                     System.out.println("Grade assigned.");
                     break;
 
-                case 7:
+                case 6:
                     System.out.println("Enter Student ID to view grades:");
                     int viewId = scanner.nextInt();
                     scanner.nextLine();
@@ -135,6 +132,9 @@ public class App {
                         gradeManager.viewGrades(found);
                     }
                     break;
+                case 7:
+                    System.out.println("Exiting...");
+                    return;
 
                 default:
                     System.out.println("Invalid option. Please try again.");
