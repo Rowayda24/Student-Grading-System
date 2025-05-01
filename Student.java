@@ -44,5 +44,17 @@ public class Student {
     @Override
     public String toString() {
         return "StudentID: " + StudentID + "\nName: " + StudentName + "\nEnrolled Courses: " + enrolledCourses;
+    } 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Student)) return false;
+        Student other = (Student) obj;
+        return this.studentID == other.studentID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(studentID);
     }
 }
