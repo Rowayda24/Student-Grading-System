@@ -29,4 +29,16 @@ public class Course {
     public String toString() {
         return "CourseID: " + CourseID + "\nCourseName: " + CourseName + "\nCredits: " + credits;
     }
+     @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Course)) return false;
+        Course other = (Course) obj;
+        return this.courseID == other.courseID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(courseID);
+    }
 }
