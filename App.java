@@ -6,9 +6,10 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) throws IOException {
         List<Student> students = new ArrayList<>(); 
-        List<Course> courses = new ArrayList<>();  
+        List<Course> courses = new ArrayList<>(); 
+        GradeManager gradeManager = new GradeManager();
         Scanner scanner = new Scanner(System.in);
-
+    
         while (true) {
             System.out.println("\nWelcome to the Student Management System");
             System.out.println("1. Add a new course");
@@ -16,6 +17,8 @@ public class App {
             System.out.println("3. Show all students");
             System.out.println("4. Show all courses");
             System.out.println("5. Exit");
+            System.out.println("6. Assign grade to student");
+            System.out.println("7. View grades for a student");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -28,15 +31,15 @@ public class App {
                     System.out.println("Enter Course ID:");
                     int courseID = scanner.nextInt();
                     System.out.println("Enter Course Credits:");
-                    int Credits = scanner.nextInt();
-                    scanner.nextLine(); 
-                    courses.add(new Course(courseName, courseID,Credits));
+                    int credits = scanner.nextInt();
+                    scanner.nextLine();
+                    courses.add(new Course(courseName, courseID, credits));
                     System.out.println("Course added successfully!");
                     break;
 
                 case 2:
                     Student student = new Student();
-                    students.add(student); 
+                    students.add(student);
                     System.out.println("Student added successfully!");
                     break;
 
@@ -46,7 +49,7 @@ public class App {
                     } else {
                         System.out.println("List of all students:");
                         for (Student s : students) {
-                            System.out.println(s); 
+                            System.out.println(s);
                         }
                     }
                     break;
@@ -66,11 +69,76 @@ public class App {
                     System.out.println("Exiting...");
                     return;
 
+                case 6:
+                    if (students.isEmpty() || courses.isEmpty()) {
+                        System.out.println("Add students and courses before assigning grades.");
+                        break;
+                    }
+
+                    System.out.println("Enter Student ID:");
+                    int sid = scanner.nextInt();
+                    scanner.nextLine();
+
+                    Student selectedStudent = null;
+                    for (Student s : students) {
+                        if (s.getStudentID() == sid) {
+                            selectedStudent = s;
+                            break;
+                        }
+                    }
+
+                    if (selectedStudent == null) {
+                        System.out.println("Student not found.");
+                        break;
+                    }
+
+                    System.out.println("Enter Course ID:");
+                    int cid = scanner.nextInt();
+                    scanner.nextLine();
+
+                    Course selectedCourse = null;
+                    for (Course c : courses) {
+                        if (c.getCourseID() == cid) {
+                            selectedCourse = c;
+                            break;
+                        }
+                    }
+
+                    if (selectedCourse == null) {
+                        System.out.println("Course not found.");
+                        break;
+                    }
+
+                    System.out.println("Enter Grade (e.g., A, B+, etc.):");
+                    String grade = scanner.nextLine();
+
+                    gradeManager.assignGrade(selectedStudent, selectedCourse, grade);
+                    System.out.println("Grade assigned.");
+                    break;
+
+                case 7:
+                    System.out.println("Enter Student ID to view grades:");
+                    int viewId = scanner.nextInt();
+                    scanner.nextLine();
+
+                    Student found = null;
+                    for (Student s : students) {
+                        if (s.getStudentID() == viewId) {
+                            found = s;
+                            break;
+                        }
+                    }
+
+                    if (found == null) {
+                        System.out.println("Student not found.");
+                    } else {
+                        gradeManager.viewGrades(found);
+                    }
+                    break;
+
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
         }
     }
 }
-
-
