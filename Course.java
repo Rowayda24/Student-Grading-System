@@ -1,35 +1,34 @@
-import java.io.*;
-
+import java.util.Objects;
 
 public class Course {
-    String CourseName;
-    int CourseID;
-    int credits;
+    private String courseName;
+    private int courseID;
+    private int credits;
 
-    public Course(String courseName, int courseID) {
-        this.CourseName = courseName;
-        this.CourseID = courseID;   
-    }
-
-    public Course(String courseName, int courseID, int credits) throws IOException {
-        this.CourseName = courseName;
-        this.CourseID = courseID;
+    public Course(String courseName, int courseID, int credits) {
+        this.courseName = courseName;
+        this.courseID = courseID;
         this.credits = credits;
-        PrintWriter pw = new PrintWriter(new FileWriter("Courses.txt", true));
-        pw.println("Course Name: " + courseName); 
-        pw.println("Course ID: " + courseID); 
-        pw.println("Credits: " + credits); 
-        pw.println(" "); 
-        pw.close();
     }
 
-    
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public int getCourseID() {
+        return courseID;
+    }
+
+    public int getCredits() {
+        return credits;
+    }
 
     @Override
     public String toString() {
-        return "CourseID: " + CourseID + "\nCourseName: " + CourseName + "\nCredits: " + credits;
+        return "Course ID: " + courseID + ", Name: " + courseName + ", Credits: " + credits;
     }
-     @Override
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Course)) return false;
