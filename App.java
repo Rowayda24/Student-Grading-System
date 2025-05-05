@@ -18,7 +18,8 @@ public class App {
             System.out.println("4. Show all courses");
             System.out.println("5. Assign grade to student");
             System.out.println("6. View grades for a student");
-            System.out.println("7. Exit");
+            System.out.println("7. Calculate GPA for a student");
+            System.out.println("8. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -132,7 +133,28 @@ public class App {
                         gradeManager.viewGrades(found);
                     }
                     break;
+
                 case 7:
+                    System.out.println("Enter Student ID to calculate GPA:");
+                    int gpaId = scanner.nextInt();
+                    scanner.nextLine();
+
+                    Student gpaStudent = null;
+                    for (Student s : students) {
+                        if (s.getStudentID() == gpaId) {
+                            gpaStudent = s;
+                            break;
+                        }
+                    }
+
+                    if (gpaStudent == null) {
+                        System.out.println("Student not found.");
+                    } else {
+                        gradeManager.calculateGPA(scanner, gpaStudent);
+                    }
+                    break;    
+                    
+                case 8:
                     System.out.println("Exiting...");
                     return;
 
