@@ -5,8 +5,7 @@ public class Student {
     private int studentID;
     private int courseCode;
 
-    public Student(String name, int studentID, int courseCode) {
-        this.courseCode = courseCode;
+    public Student(String name, int studentID) {
         this.name = name;
         this.studentID = studentID;
     }
@@ -29,7 +28,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student ID: " + studentID + ", Name: " + name + ", Enrolled Course Code: "  + courseCode;
+        return "Student ID: " + studentID + ", Name: " + name;
     }
 
     @Override
