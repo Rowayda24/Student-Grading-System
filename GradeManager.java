@@ -1,7 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.io.IOException;
 
 public class GradeManager {
     private Map<Student, Map<Course, String>> grades = new HashMap<>();
@@ -10,16 +9,39 @@ public class GradeManager {
         grades.computeIfAbsent(student, k -> new HashMap<>()).put(course, grade);
     }
 
-    public void viewGrades(Student student) {
+    public String getStudentGrade(Student student, Course course) {
         Map<Course, String> studentGrades = grades.get(student);
-        if (studentGrades == null || studentGrades.isEmpty()) {
-            System.out.println("No grades found for student: " + student.getStudentName());
+    
+        if (studentGrades != null) {
+            String grade = studentGrades.get(course);
+            if (grade != null) {
+                return grade; 
+            } else {
+                return "No grade found for course: " + course.getCourseName();
+            }
         } else {
-            System.out.println("Grades for " + student.getStudentName() + ":");
-            for (Map.Entry<Course, String> entry : studentGrades.entrySet()) {
-                System.out.println("Course: " + entry.getKey().getCourseName() + " | Grade: " + entry.getValue());
+            return "No grades found for student: " + student.getStudentName();
+        }
+    }
+
+
+    public Map<Student, Map<Course, String>> getGrades() {
+        return grades;
+    }
+
+    public Map<Student, String> viewCourseGrades(Course course) {
+        Map<Student, String> courseGrades = new HashMap<>();
+
+        for (Map.Entry<Student, Map<Course, String>> entry : grades.entrySet()) {
+            Student student = entry.getKey();
+            Map<Course, String> studentGrades = entry.getValue();
+
+            if (studentGrades.containsKey(course)) {
+                String grade = studentGrades.get(course);
+                courseGrades.put(student, grade);
             }
         }
+        return courseGrades;
     }
 
     public void calculateGPA(Scanner scanner, Student student) {
@@ -66,3 +88,4 @@ public class GradeManager {
         }
     }
 }
+
