@@ -2,12 +2,13 @@ import java.util.Objects;
 
 public class Course {
     private String courseName;
-    private int courseID;
+    private int courseCode;
     private int credits;
 
-    public Course(String courseName, int courseID, int credits) {
+
+    public Course(String courseName, int courseCode, int credits){
         this.courseName = courseName;
-        this.courseID = courseID;
+        this.courseCode = courseCode;
         this.credits = credits;
     }
 
@@ -15,8 +16,8 @@ public class Course {
         return courseName;
     }
 
-    public int getCourseID() {
-        return courseID;
+    public int getCourseCode() {
+        return courseCode;
     }
 
     public int getCredits() {
@@ -25,7 +26,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course ID: " + courseID + ", Name: " + courseName + ", Credits: " + credits;
+        return "Course Code: " + courseCode + ", Name: " + courseName + ", Credits: " + credits;
     }
 
     @Override
@@ -33,11 +34,11 @@ public class Course {
         if (this == obj) return true;
         if (!(obj instanceof Course)) return false;
         Course other = (Course) obj;
-        return this.courseID == other.courseID;
+        return this.courseCode == other.courseCode;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(courseID);
+        return Objects.hash(courseCode);
     }
 }
