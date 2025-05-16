@@ -44,11 +44,11 @@ public class GradeManager {
         return courseGrades;
     }
 
-    public void calculateGPA(Scanner scanner, Student student) {
+    public double calculateGPA(Scanner scanner, Student student) {
         Map<Course, String> studentGrades = grades.get(student);
         if (studentGrades == null || studentGrades.isEmpty()) {
             System.out.println("No grades found for student: " + student.getStudentName());
-            return;
+            return 0;
         }
 
         double totalPoints = 0;
@@ -64,11 +64,12 @@ public class GradeManager {
 
         if (totalCredits == 0) {
             System.out.println("Error: total credit hours is zero.");
-            return;
+            return 0;
         }
 
         double gpa = totalPoints / totalCredits;
         System.out.printf("GPA for %s (%s): %.2f%n", student.getStudentName(), student.getStudentID(), gpa);
+        return gpa;
     }
     private double convertGradeToPoints(String grade) {
         switch (grade.toUpperCase()) {
