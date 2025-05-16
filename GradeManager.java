@@ -1,6 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class GradeManager {
     private Map<Student, Map<Course, String>> grades = new HashMap<>();
@@ -44,10 +44,10 @@ public class GradeManager {
         return courseGrades;
     }
 
-    public double calculateGPA(Scanner scanner, Student student) {
+    public double calculateGPA(Student student) {
         Map<Course, String> studentGrades = grades.get(student);
         if (studentGrades == null || studentGrades.isEmpty()) {
-            System.out.println("No grades found for student: " + student.getStudentName());
+            Logger.getLogger(GradeManager.class.getName()).warning("No grades found for student: " + student.getStudentName());
             return 0;
         }
 
@@ -88,5 +88,34 @@ public class GradeManager {
                 return 0.0;
         }
     }
-}
+    public String GenerateReportCard(Student student) {
+        Map<Course, String> studentGrades = grades.get(student);
 
+        if (studentGrades == null || studentGrades.isEmpty()) {
+            return "No grades found for student: " + student.getStudentName();
+        }
+
+        String report = "Report Card for " + student.getStudentName() + ":\n";
+        int totalCredits = 0;
+
+        for (Map.Entry<Course, String> entry : studentGrades.entrySet()) {
+            Course course = entry.getKey();
+            String grade = entry.getValue();
+
+            if (grade != null) {
+                report += "Course: " + course.getCourseName() +
+                          " | Credits: " + course.getCredits() +
+                          " | Grade: " + grade + "\n";
+                totalCredits += course.getCredits();
+            } else {
+                report += "No grade found for course: " + course.getCourseName() + "\n";
+            }
+        }
+
+        report += "Total Credits: " + totalCredits + "\n";
+
+
+        double gpa = calculateGPA(student);
+        report +=  "GPA: " + String.format("%.2f", gpa);
+        return report;}
+}
