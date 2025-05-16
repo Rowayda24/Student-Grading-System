@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class GUI extends JFrame implements ActionListener {
     private JTextArea textArea;
-    private JButton addCourseButton, addStudentButton, showStudentsButton, showCoursesButton, assignGradeButton, viewStudentGradesButton, viewCourseGradeButton, ReportCardButton,exitButton;
+    private JButton addCourseButton, addStudentButton, showStudentsButton, showCoursesButton, assignGradeButton, viewStudentGradesButton, viewCourseGradeButton, reportCardButton, exitButton;
 
     // Data structures to store courses, students, and grades
     private HashMap<Integer, Course> courses = new HashMap<>();
@@ -18,11 +18,22 @@ public class GUI extends JFrame implements ActionListener {
     ArrayList<Course> enrolledCourses = new ArrayList<>();
 
 
+    private JTextArea reportTextArea;
+    private JScrollPane reportScrollPane;
+
     public GUI() {
         setTitle("Student Management System");
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+
+        // Initialize reusable components for report card
+        reportTextArea = new JTextArea();
+        reportTextArea.setEditable(false);
+        reportTextArea.setLineWrap(true);
+        reportTextArea.setWrapStyleWord(true);
+        reportScrollPane = new JScrollPane(reportTextArea);
+        reportScrollPane.setPreferredSize(new Dimension(400, 300));
 
         textArea = new JTextArea();
         textArea.setEditable(false);
@@ -36,9 +47,9 @@ public class GUI extends JFrame implements ActionListener {
         showStudentsButton = new JButton("Show Students");
         showCoursesButton = new JButton("Show Courses");
         assignGradeButton = new JButton("Assign Grade");
-        viewStudentGradesButton = new JButton("View Student Grades");
-        viewCourseGradeButton = new JButton("View Course Grades");
-        ReportCardButton = new JButton("Generate Report Card");
+        viewStudentGradesButton = new JButton("Student Grade");
+        viewCourseGradeButton = new JButton("Course Grades");
+        reportCardButton = new JButton("Generate Report Card");
         exitButton = new JButton("Exit");
 
         buttonPanel.add(addCourseButton);
@@ -48,7 +59,7 @@ public class GUI extends JFrame implements ActionListener {
         buttonPanel.add(assignGradeButton);
         buttonPanel.add(viewStudentGradesButton);
         buttonPanel.add(viewCourseGradeButton);
-        buttonPanel.add(ReportCardButton);
+        buttonPanel.add(reportCardButton);
         buttonPanel.add(exitButton);
 
         add(buttonPanel, BorderLayout.WEST);
@@ -60,7 +71,7 @@ public class GUI extends JFrame implements ActionListener {
         assignGradeButton.addActionListener(this);
         viewStudentGradesButton.addActionListener(this);
         viewCourseGradeButton.addActionListener(this);
-        ReportCardButton.addActionListener(this);
+        reportCardButton.addActionListener(this);
         exitButton.addActionListener(this);
 
         setVisible(true);
@@ -109,30 +120,44 @@ public class GUI extends JFrame implements ActionListener {
                     textArea.append("Invalid number of courses. A student cannot enroll in more than 10 courses.\n");
                     return;
                 }
+
+                // Create the student once
+                Student student = new Student(studentName.trim(), studentID);
+                students.put(studentID, student); // Add the student to the map
+
+                // Enroll the student in courses
                 for (int i = 0; i < numberofcourses; i++) {
                     int courseCode = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Course Code:"));
                     Course course = courses.get(courseCode);
                     if (course != null) {
-                        enrolledCourses.add(course);
+                        gradeManager.assignGrade(student, course, null); // Enroll the student in the course with no grade initially
                     } else {
                         textArea.append("Course with code \"" + courseCode + "\" doesn't exist.\n");
                         return;
                     }
-                    Student student = new Student(studentName.trim(), studentID, courseCode);
-                    students.put(studentID, student);
                 }
-                textArea.append("Student added successfully.\n");
+                textArea.append("Student added successfully and enrolled in courses.\n");
             } catch (NumberFormatException ex) {
-                textArea.append("Invalid input for student name, ID, or enrolled courses codes. Please enter try again.\n");
+                textArea.append("Invalid input for student name, ID, or enrolled courses codes. Please try again.\n");
             }
             
         } else if (e.getSource() == showStudentsButton) {
             if (students.isEmpty()) {
                 textArea.append("No students available.\n");
             } else {
-                textArea.append("List of students:\n");
+                textArea.append("List of students and their enrolled courses:\n");
                 for (Student student : students.values()) {
-                    textArea.append(student.toString() + "\n");
+                    textArea.append("Student: " + student.getStudentName() + " (ID: " + student.getStudentID() + ")\n");
+                    Map<Course, String> studentGrades = gradeManager.getGrades().get(student);
+
+                    if (studentGrades != null && !studentGrades.isEmpty()) {
+                        textArea.append("  Enrolled Courses:\n");
+                        for (Course course : studentGrades.keySet()) {
+                            textArea.append("    - " + course.getCourseName() + " (Code: " + course.getCourseCode() + ")\n");
+                        }
+                    } else {
+                        textArea.append("  No courses enrolled.\n");
+                    }
                 }
             }
                         
@@ -198,8 +223,34 @@ public class GUI extends JFrame implements ActionListener {
                 } catch (NumberFormatException ex) {
                 textArea.append("Invalid input for course code. Please enter a numeric value.\n");
             }
-        } else if (e.getSource() == ReportCardButton) {
-                    
+        } else if (e.getSource() == reportCardButton) {
+            String inputId = JOptionPane.showInputDialog(this, "Enter Student ID to generate report card:");
+            if (inputId == null) {
+                return;
+            }
+            try {
+                int studentId = Integer.parseInt(inputId);
+                if (!students.containsKey(studentId)) {
+                    JOptionPane.showMessageDialog(this, "Student not found. Please try again.");
+                    return;
+                }
+        
+                Student found = students.get(studentId);
+                String report = gradeManager.GenerateReportCard(found);
+        
+                JTextArea textArea = new JTextArea(report);
+                textArea.setEditable(false);
+                textArea.setLineWrap(true);
+                textArea.setWrapStyleWord(true);
+        
+                JScrollPane scrollPane = new JScrollPane(textArea);
+                scrollPane.setPreferredSize(new Dimension(400, 300));
+        
+                JOptionPane.showMessageDialog(this, scrollPane, "Report Card", JOptionPane.INFORMATION_MESSAGE);
+        
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid input. Please enter a numeric value.");
+            }
         } else if (e.getSource() == exitButton) {
             int confirm = JOptionPane.showConfirmDialog(this, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
