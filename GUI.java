@@ -82,6 +82,10 @@ public class GUI extends JFrame implements ActionListener {
         if (e.getSource() == addCourseButton) {
             String courseName = JOptionPane.showInputDialog(this, "Enter course name:");
             try {
+                if (courseName == null || courseName.trim().isEmpty() || !courseName.matches("[a-zA-Z ]+")) {
+                    textArea.append("Course name must contain only letters and spaces.\n");
+                    return;
+                }
                 int courseCode = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter course Code:"));
                 int credits = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter course credits:"));
                 if (courses.containsKey(courseCode)) {
@@ -106,6 +110,10 @@ public class GUI extends JFrame implements ActionListener {
         } else if (e.getSource() == addStudentButton) {
             String studentName = JOptionPane.showInputDialog(this, "Enter student name:");
             try {
+                if (studentName == null || studentName.trim().isEmpty() || !studentName.matches("[a-zA-Z ]+")) {
+                    textArea.append("Student name cannot be empty.\n");
+                    return;
+                }
                 int studentID = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Student ID:"));
                 // Check if the student ID already exists
                 if (students.containsKey(studentID)) {
@@ -123,7 +131,6 @@ public class GUI extends JFrame implements ActionListener {
 
                 // Create the student once
                 Student student = new Student(studentName.trim(), studentID);
-                students.put(studentID, student); // Add the student to the map
 
                 // Enroll the student in courses
                 for (int i = 0; i < numberofcourses; i++) {
@@ -136,6 +143,8 @@ public class GUI extends JFrame implements ActionListener {
                         return;
                     }
                 }
+                students.put(studentID, student); // Add the student to the map
+
                 textArea.append("Student added successfully and enrolled in courses.\n");
             } catch (NumberFormatException ex) {
                 textArea.append("Invalid input for student name, ID, or enrolled courses codes. Please try again.\n");
@@ -176,6 +185,10 @@ public class GUI extends JFrame implements ActionListener {
                     return;
                 }
                 String grade = JOptionPane.showInputDialog(this, "Enter grade for " + student.getStudentName() + ":");
+                if (grade == null || grade.trim().isEmpty()) {
+                    textArea.append("Grade cannot be empty.\n");
+                    return;
+                }
                 gradeManager.assignGrade(student, course, grade);
                 textArea.append("Grade assigned successfully.\n");
             } catch (NumberFormatException ex) {
@@ -226,6 +239,7 @@ public class GUI extends JFrame implements ActionListener {
         } else if (e.getSource() == reportCardButton) {
             String inputId = JOptionPane.showInputDialog(this, "Enter Student ID to generate report card:");
             if (inputId == null) {
+                textArea.append("Invalid Input.\n");
                 return;
             }
             try {
